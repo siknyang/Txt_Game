@@ -6,14 +6,14 @@ namespace TxtGame
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) //게임 실행
         {
             GameManager gameManager = new GameManager();
             gameManager.StartGame();
         }
 
 
-        class GameManager
+        class GameManager   //게임 메인 화면
         {
             public void StartGame()
             {
@@ -52,9 +52,9 @@ namespace TxtGame
         }
 
 
-        class StateManager
+        class StateManager  //상태 보기
         {
-            //아이템 장착에 따른 정보 반영 미해결
+            //미해결: 아이템 장착에 따른 정보 반영
             public static int level = 1;
             public static string name = "서영";
             public static string job = "전사";
@@ -63,7 +63,7 @@ namespace TxtGame
             public static int defenseP = 5;
             public static int hp = 100;
 
-            public static void State(GameManager game)
+            public static void State(GameManager game)  //상태 메인 화면
             {
                 Console.WriteLine("상태 보기");
                 Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
@@ -95,15 +95,16 @@ namespace TxtGame
         }
 
 
-        class InventoryManager
+        class InventoryManager  //인벤토리
         {
             public static List<string> items = new List<string>();
             public static int[] num = { 1, 2, 3, 4, 5, 6 };
-            public static List<string> wear = new List<string>();
-            
+            public static Dictionary<int, string> wear = new Dictionary<int, string>();
 
-        public static void Inventory(GameManager game)
+            public static void Inventory(GameManager game)  //인벤토리 메인 화면
             {
+                //미해결: 기존 구매 완료 상품 표시
+                
                 Console.WriteLine("인벤토리");
                 Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.\n");
 
@@ -134,13 +135,15 @@ namespace TxtGame
                 }
             }
 
-            public static void InventoryList(GameManager game, bool itemNum)
+            public static void InventoryList(GameManager game, bool itemNum)    //아이템 번호 표시
             {
+                //미해결: 인벤토리 내 가격 정보 제거
+                
                 if (itemNum)
                 {
                     for (int i = 0; i < items.Count; i++)
                     {
-                        Console.WriteLine($"- {InventoryManager.num[i]} {items[i]}");
+                        Console.WriteLine($"- {num[i]} {items[i]}");
                     }
                 }
                 else
@@ -154,7 +157,7 @@ namespace TxtGame
 
             }
 
-            public static void Equip(GameManager game)
+            public static void Equip(GameManager game)  //장착 관리
             {
                 Console.WriteLine("인벤토리");
                 Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.\n");
@@ -167,7 +170,6 @@ namespace TxtGame
                 Console.Write("원하시는 행동을 입력해주세요.\n>> ");
                 string input = Console.ReadLine();
 
-                //[E] 표시 온오프 미해결
                 if (input == "0")
                 {
                     Console.Clear();
@@ -176,22 +178,19 @@ namespace TxtGame
                 else if (int.TryParse(input, out int itemNum) && itemNum >= 1 && itemNum <= items.Count)
                 {
                     int itemIndex = itemNum - 1;
-                    string selctedItem = items[itemIndex];
 
-                    if (!wear.Contains(items[itemIndex]))
+                    if (!wear.ContainsKey(itemIndex))
                     {
-                        Console.Clear();
-                        items[itemIndex] = ($"- [E]{items[itemIndex]}");
-                        wear.Add(selctedItem);
-                        Equip(game);
+                        items[itemIndex] = "[E] " + items[itemIndex];
+                        wear.Add(itemIndex, items[itemIndex]);
                     }
-                    else if (wear.Contains(InventoryManager.items[itemIndex]))
+                    else
                     {
-                        Console.Clear();
-                        items[itemIndex] = (items[itemIndex]);
-                        wear.Remove(selctedItem);
-                        Equip(game);
+                        items[itemIndex] = items[itemIndex].Replace("[E] ", "");
+                        wear.Remove(itemIndex);
                     }
+                    Console.Clear();
+                    Equip(game);
                 }
                 else
                 {
@@ -203,7 +202,7 @@ namespace TxtGame
         }
 
 
-        class StoreManager
+        class StoreManager  //상점
         {
             public static int[] num = { 1, 2, 3, 4, 5, 6 };
             public static string[] name = { "수련자 갑옷", "무쇠 갑옷", "스파르타의 갑옷", "낡은 검", "청동 도끼", "스파르타의 창" };
@@ -218,19 +217,8 @@ namespace TxtGame
                         "스파르타의 전사들이 사용했다는 전설의 창입니다."};
             public static string[] price = { "1000", "구매완료", "3500", "600", "1500", "구매완료" };
             public static string[] items = new string[name.Length];
-            
 
-            //간격 맞추기 위해 개별 출력 시도
-            //public static string item1 = $"{StoreManager.name[0]}       |   {StoreManager.pType[0]}+{StoreManager.power[0]}   |   {StoreManager.explain[0]}                      |   {StoreManager.price[0]} G";
-            //public static string item2 = $"{StoreManager.name[1]}          |   {StoreManager.pType[1]}+{StoreManager.power[1]}   |   {StoreManager.explain[1]}                  |   {StoreManager.price[1]} G";
-            //public static string item3 = $"{StoreManager.name[2]}   |   {StoreManager.pType[2]}+{StoreManager.power[2]}  |   {StoreManager.explain[2]}   |   {StoreManager.price[2]} G";
-            //public static string item4 = $"{StoreManager.name[3]}           |   {StoreManager.pType[3]}+{StoreManager.power[3]}   |   {StoreManager.explain[3]}                     |   {StoreManager.price[3]} G";
-            //public static string item5 = $"{StoreManager.name[4]}         |   {StoreManager.pType[4]}+{StoreManager.power[4]}   |   {StoreManager.explain[4]}                |   {StoreManager.price[4]} G";
-            //public static string item6 = $"{StoreManager.name[5]}     |   {StoreManager.pType[5]}+{StoreManager.power[5]}   |   {StoreManager.explain[5]}     |   {StoreManager.price[5]} G";
-            //public static string[] items = { item1, item2, item3, item4, item5, item6 };
-
-
-            public static void Store(GameManager game)
+            public static void Store(GameManager game)  //상점 메인 화면
             {  
 
                 Console.WriteLine("상점");
@@ -266,20 +254,26 @@ namespace TxtGame
                 }
             }
 
-            public static void ItemList(GameManager game, bool itemNum)
+            public static void ItemList(GameManager game, bool itemNum) //아이템 정보 표시, 번호 온오프
             {
-                //StoreManager storeManager = new StoreManager();
-
                 for (int num = 0; num < name.Length; num++)
                 {
-                    items[num] = $"{StoreManager.name[num],-11}|   {StoreManager.pType[num]}+{StoreManager.power[num],-5}|   {StoreManager.explain[num],-30}|   {StoreManager.price[num]} G";
+                    items[num] = $"{name[num],-11}|   {pType[num]}+{power[num],-5}|   {explain[num],-30}";
+                    if (price[num] == "구매완료")
+                    {
+                        items[num] += $"|   {price[num]}";
+                    }
+                    else
+                    {
+                        items[num] += $"|   {price[num]} G";
+                    }
                 }
 
                     if (itemNum)
                 {
                     for (int i = 0; i < items.Length; i++)
                     {
-                        Console.WriteLine($"- {StoreManager.num[i]} {items[i]}");
+                        Console.WriteLine($"- {num[i]} {items[i]}");
                     }
                 }
                 else
@@ -291,7 +285,7 @@ namespace TxtGame
                 }
             }
 
-            public static void BuyItem(GameManager game)
+            public static void BuyItem(GameManager game)    //아이템 구매
             {
                 Console.WriteLine("상점");
                 Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.\n");
@@ -313,20 +307,20 @@ namespace TxtGame
                     Console.Clear();
                     Store(game);
                 }
-                else if (int.TryParse(input, out int itemNum) && itemNum >= 1 && itemNum <= StoreManager.price.Length)
+                else if (int.TryParse(input, out int itemNum) && itemNum >= 1 && itemNum <= price.Length)
                 {
                     int itemIndex = itemNum - 1;
 
-                    if (StoreManager.price[itemIndex] == "구매완료")
+                    if (price[itemIndex] == "구매완료")
                     {
                         Console.Clear();
                         Console.WriteLine("이미 구매한 아이템입니다.\n");
                         BuyItem(game);
                     }
-                    else if (StateManager.gold >= int.Parse(StoreManager.price[itemIndex]))
+                    else if (StateManager.gold >= int.Parse(price[itemIndex]))
                     {
-                        StateManager.gold -= int.Parse(StoreManager.price[itemIndex]);
-                        InventoryManager.items.Add(StoreManager.items[itemIndex]);
+                        StateManager.gold -= int.Parse(price[itemIndex]);
+                        InventoryManager.items.Add(items[itemIndex]);
                         price[itemIndex] = "구매완료";
                         Console.Clear();
                         Console.WriteLine("구매를 완료했습니다.\n");
